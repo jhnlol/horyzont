@@ -153,7 +153,7 @@ export async function checkMobileBoundary(root: string, entryPoint = mobileEntry
 		sourcemap: false,
 		entryPoints: [{ in: path.join(root, 'src', `${entryPoint}.ts`), out: entryPoint }],
 		outdir: path.join(root, mobileDirectory, 'out'),
-		loader: { '.ttf': 'file', '.svg': 'file', '.png': 'file', '.sh': 'file' },
+		loader: { '.ttf': 'file', '.woff2': 'file', '.svg': 'file', '.png': 'file', '.sh': 'file' },
 		assetNames: 'media/[name]',
 		plugins: [mobilePlugin(root)],
 		logLevel: 'silent',

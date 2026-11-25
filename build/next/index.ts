@@ -560,6 +560,7 @@ async function bundleToOutput(outDir: string, doMinify: boolean, doNls: boolean,
 				: { outfile: outPath }),
 			loader: {
 				'.ttf': 'file',
+				'.woff2': 'file', // Horyzont: bundled JetBrains Mono
 				'.svg': 'file',
 				'.png': 'file',
 				'.sh': 'file',
