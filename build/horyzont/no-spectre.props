@@ -1,0 +1,11 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Horyzont dev builds: allow native modules to compile without the optional
+       "MSVC Spectre-mitigated libs" Visual Studio component.
+       Used via env var ForceImportAfterCppTargets. Do not use for release builds.
+       Library paths were already resolved to lib\spectre\<arch>, so point them back at lib\<arch>. -->
+  <PropertyGroup>
+    <SpectreMitigation>false</SpectreMitigation>
+    <LibraryPath>$(LibraryPath.Replace('\lib\spectre\', '\lib\'))</LibraryPath>
+    <ReferencePath>$(ReferencePath.Replace('\lib\spectre\', '\lib\'))</ReferencePath>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,166 @@
+name: Release
+
+# Builds Horyzont for Windows, Linux and macOS and publishes a GitHub release.
+# Installed copies check `update-<platform>-stable.json` of the latest release (see
+# `updateUrl` and `staticUpdateFeed` in product.json) and update themselves from it.
+#
+# Start it by pushing a tag (git tag v1.0.0 && git push origin v1.0.0)
+# or from the Actions tab (Run workflow), which then names the release itself.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release, for example 1.2.0 (empty: package.json version + run number)'
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+env:
+  NODE_OPTIONS: --max-old-space-size=8192
+  VSCODE_QUALITY: stable
+  VSCODE_SKIP_NODE_VERSION_CHECK: '1'
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+      version: ${{ steps.tag.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: tag
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            version="${GITHUB_REF_NAME#v}"
+          elif [[ -n "${{ github.event.inputs.version }}" ]]; then
+            version="${{ github.event.inputs.version }}"
+          else
+            version="$(node -p "require('./package.json').version").${GITHUB_RUN_NUMBER}"
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: version
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-2022, platform: win32, arch: x64 }
+          - { os: ubuntu-22.04, platform: linux, arch: x64 }
+          - { os: macos-14, platform: darwin, arch: arm64 }
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Linux packages
+        if: matrix.platform == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pkg-config libxkbfile-dev libkrb5-dev libsecret-1-dev libgtk-3-0 libgbm1 fakeroot rpm dpkg
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          corepack enable
+          for i in 1 2 3; do pnpm install --frozen-lockfile && break; echo "pnpm install failed ($i), retrying"; sleep 15; done
+        env:
+          npm_config_arch: ${{ matrix.arch }}
+          VSCODE_ARCH: ${{ matrix.arch }}
+
+      - name: Download built-in extensions
+        run: node build/lib/builtInExtensions.ts
+
+      - name: Build application
+        run: pnpm run gulp vscode-${{ matrix.platform }}-${{ matrix.arch }}-min
+        env:
+          VSCODE_ARCH: ${{ matrix.arch }}
+
+      - name: Package Windows installer
+        if: matrix.platform == 'win32'
+        shell: bash
+        run: |
+          pnpm run gulp vscode-win32-${{ matrix.arch }}-inno-updater
+          pnpm run gulp vscode-win32-${{ matrix.arch }}-user-setup
+          mkdir -p dist
+          cp .build/win32-${{ matrix.arch }}/user-setup/VSCodeSetup.exe "dist/HoryzontUserSetup-${{ matrix.arch }}-${{ needs.version.outputs.version }}.exe"
+
+      - name: Package Linux archives
+        if: matrix.platform == 'linux'
+        run: |
+          pnpm run gulp vscode-linux-${{ matrix.arch }}-prepare-deb
+          pnpm run gulp vscode-linux-${{ matrix.arch }}-build-deb
+          mkdir -p dist
+          cp .build/linux/deb/amd64/deb/*.deb "dist/horyzont-${{ needs.version.outputs.version }}-amd64.deb"
+          tar -czf "dist/Horyzont-linux-${{ matrix.arch }}-${{ needs.version.outputs.version }}.tar.gz" -C .. VSCode-linux-${{ matrix.arch }}
+
+      - name: Package macOS app
+        if: matrix.platform == 'darwin'
+        run: |
+          app="../VSCode-darwin-${{ matrix.arch }}/Horyzont.app"
+          # Ad-hoc signature: required for Apple Silicon to launch the app at all. Without an Apple
+          # Developer ID, users open it the first time with right click > Open.
+          codesign --force --deep --sign - "$app"
+          mkdir -p dist
+          ditto -c -k --sequesterRsrc --keepParent "$app" "dist/Horyzont-darwin-${{ matrix.arch }}-${{ needs.version.outputs.version }}.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: horyzont-${{ matrix.platform }}-${{ matrix.arch }}
+          path: dist/*
+          if-no-files-found: error
+
+  publish:
+    needs: [version, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Write update feeds
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd dist
+          version="${{ needs.version.outputs.version }}"
+          base="https://github.com/${GITHUB_REPOSITORY}/releases/download/${{ needs.version.outputs.tag }}"
+          now="$(date +%s)000"
+          feed() { # <platform> <file>
+            local sha; sha="$(sha256sum "$2" | cut -d' ' -f1)"
+            printf '{\n\t"url": "%s/%s",\n\t"name": "%s",\n\t"version": "%s",\n\t"productVersion": "%s",\n\t"sha256hash": "%s",\n\t"timestamp": %s\n}\n' \
+              "$base" "$2" "$version" "$GITHUB_SHA" "$version" "$sha" "$now" > "update-$1-stable.json"
+          }
+          feed win32-x64-user HoryzontUserSetup-x64-$version.exe
+          feed linux-x64 Horyzont-linux-x64-$version.tar.gz
+          feed darwin-arm64 Horyzont-darwin-arm64-$version.zip
+          ls -la
+
+      - name: Publish release
+        shell: bash
+        run: |
+          gh release create "${{ needs.version.outputs.tag }}" dist/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "Horyzont ${{ needs.version.outputs.version }}" \
+            --generate-notes

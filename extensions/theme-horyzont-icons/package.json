@@ -1,0 +1,23 @@
+{
+  "name": "theme-horyzont-icons",
+  "displayName": "Horyzont Icons",
+  "description": "Colorful badge-style file and folder icons for Horyzont.",
+  "version": "1.0.0",
+  "publisher": "vscode",
+  "license": "MIT",
+  "engines": {
+    "vscode": "*"
+  },
+  "categories": [
+    "Themes"
+  ],
+  "contributes": {
+    "iconThemes": [
+      {
+        "id": "horyzont-icons",
+        "label": "Horyzont Icons",
+        "path": "./horyzont-icon-theme.json"
+      }
+    ]
+  }
+}

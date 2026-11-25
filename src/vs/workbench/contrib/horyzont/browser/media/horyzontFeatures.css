@@ -1,0 +1,34 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+/* ---- Horyzont Focus: everything outside the current function steps back ---- */
+.monaco-editor .horyzont-focus-dim {
+	opacity: 0.32;
+}
+
+.monaco-editor .margin-view-overlays .line-numbers.horyzont-focus-dim {
+	opacity: 0.4;
+}
+
+/* ---- Edit traces: a thin amber mark left of the line number, fading with age ---- */
+.monaco-editor .margin-view-overlays .line-numbers.horyzont-trace {
+	--horyzont-trace-alpha: 0%;
+	box-shadow: inset 2px 0 0 color-mix(in srgb, var(--vscode-horyzont-editTrace) var(--horyzont-trace-alpha), transparent);
+}
+
+.monaco-editor .margin-view-overlays .line-numbers.horyzont-trace-0 {
+	--horyzont-trace-alpha: 100%;
+	color: color-mix(in srgb, var(--vscode-horyzont-editTrace) 75%, var(--vscode-editorLineNumber-foreground));
+}
+
+.monaco-editor .margin-view-overlays .line-numbers.horyzont-trace-1 { --horyzont-trace-alpha: 70%; }
+.monaco-editor .margin-view-overlays .line-numbers.horyzont-trace-2 { --horyzont-trace-alpha: 45%; }
+.monaco-editor .margin-view-overlays .line-numbers.horyzont-trace-3 { --horyzont-trace-alpha: 28%; }
+.monaco-editor .margin-view-overlays .line-numbers.horyzont-trace-4 { --horyzont-trace-alpha: 14%; }
+
+/* The active line number keeps its own color */
+.monaco-editor .margin-view-overlays .line-numbers.active-line-number.horyzont-trace-0 {
+	color: var(--vscode-editorLineNumber-activeForeground);
+}

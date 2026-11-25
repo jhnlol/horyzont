@@ -1,0 +1,339 @@
+/*---------------------------------------------------------------------------------------------
+ *  Horyzont visual identity layer (minimal).
+ *  Feeling: calm and focused. One accent, flat surfaces, quiet chrome; the code is the hero.
+ *  Colors come from the active theme tokens; this file only adjusts shape, weight and motion.
+ *--------------------------------------------------------------------------------------------*/
+
+/* ---- Bundled editor font: JetBrains Mono (SIL OFL 1.1, see fonts/OFL.txt) ---- */
+@font-face {
+	font-family: 'JetBrains Mono';
+	font-style: normal;
+	font-display: block;
+	font-weight: 100 800;
+	src: local('JetBrains Mono'), url('./fonts/jetbrains-mono-latin-wght-normal.woff2') format('woff2-variations');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+	font-family: 'JetBrains Mono';
+	font-style: normal;
+	font-display: block;
+	font-weight: 100 800;
+	src: local('JetBrains Mono'), url('./fonts/jetbrains-mono-latin-ext-wght-normal.woff2') format('woff2-variations');
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+	font-family: 'JetBrains Mono';
+	font-style: italic;
+	font-display: block;
+	font-weight: 100 800;
+	src: local('JetBrains Mono Italic'), url('./fonts/jetbrains-mono-latin-wght-italic.woff2') format('woff2-variations');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+	font-family: 'JetBrains Mono';
+	font-style: italic;
+	font-display: block;
+	font-weight: 100 800;
+	src: local('JetBrains Mono Italic'), url('./fonts/jetbrains-mono-latin-ext-wght-italic.woff2') format('woff2-variations');
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+.monaco-workbench {
+	--horyzont-accent: var(--vscode-button-background);
+	--horyzont-radius: 10px;
+	--horyzont-radius-sm: 6px;
+	--horyzont-shadow: 0 12px 32px -14px var(--vscode-widget-shadow, rgba(0, 0, 0, 0.5));
+}
+
+/* ---- Shell: flat, cards float without decoration ---- */
+.monaco-workbench.floating-panels .part.titlebar,
+.monaco-workbench.floating-panels .part.statusbar {
+	background-color: transparent !important;
+}
+
+/* ---- Title bar: quieter text ---- */
+.monaco-workbench .part.titlebar > .titlebar-container > .titlebar-left > .window-appicon:not(.codicon) {
+	background-size: 16px;
+}
+
+.monaco-workbench .part.titlebar .command-center .action-item.command-center-center {
+	border-radius: 999px !important;
+	max-width: 440px;
+	margin-inline: auto;
+}
+
+/* Sidebar header with the activity icons on top: quiet icons, accent on the active one */
+.monaco-workbench .part.sidebar > .header-or-footer .composite-bar .action-item .action-label,
+.monaco-workbench .part.sidebar > .title .composite-bar .action-item .action-label {
+	opacity: 0.5;
+}
+
+.monaco-workbench .part.sidebar > .header-or-footer .composite-bar .action-item:hover .action-label,
+.monaco-workbench .part.sidebar > .header-or-footer .composite-bar .action-item.checked .action-label,
+.monaco-workbench .part.sidebar > .title .composite-bar .action-item.checked .action-label {
+	opacity: 1;
+	color: var(--vscode-activityBar-activeForeground) !important;
+}
+
+/* Explorer: a little more air between rows and sections */
+.monaco-workbench .part.sidebar .pane-header {
+	padding-top: 2px;
+}
+
+.monaco-workbench .part.sidebar .monaco-list .monaco-list-row {
+	padding-inline-start: 2px;
+}
+
+.monaco-workbench .part.titlebar .menubar .menubar-menu-button {
+	opacity: 0.7;
+}
+
+.monaco-workbench .part.titlebar .menubar .menubar-menu-button:hover,
+.monaco-workbench .part.titlebar .menubar .menubar-menu-button.open {
+	opacity: 1;
+}
+
+/* ---- Buttons: flat accent ---- */
+.monaco-workbench .monaco-button,
+.monaco-workbench .monaco-inputbox,
+.monaco-workbench .monaco-select-box {
+	border-radius: var(--horyzont-radius-sm) !important;
+	box-shadow: none !important;
+}
+
+/* ---- Activity bar: icons only, thin accent mark ---- */
+.monaco-workbench .activitybar > .content .monaco-action-bar .action-item .action-label {
+	opacity: 0.55;
+	transition: opacity 120ms ease;
+}
+
+.monaco-workbench .activitybar > .content .monaco-action-bar .action-item:hover .action-label,
+.monaco-workbench .activitybar > .content .monaco-action-bar .action-item.checked .action-label {
+	opacity: 1;
+}
+
+.monaco-workbench .activitybar > .content .monaco-action-bar .action-item.checked::after {
+	content: '';
+	position: absolute;
+	left: 1px;
+	top: 35%;
+	bottom: 35%;
+	width: 2px;
+	border-radius: 2px;
+	background: var(--horyzont-accent);
+	pointer-events: none;
+}
+
+/* ---- Lists ---- */
+.monaco-workbench .part.sidebar .monaco-list-row,
+.monaco-workbench .part.auxiliarybar .monaco-list-row,
+.monaco-workbench .quick-input-list .monaco-list-row {
+	border-radius: var(--horyzont-radius-sm);
+}
+
+/* Quieter file icons: color as a hint, not a highlight */
+.monaco-workbench .show-file-icons .monaco-icon-label::before {
+	filter: saturate(0.45) brightness(0.95) opacity(0.85);
+}
+
+.monaco-workbench .monaco-list-row.selected .monaco-icon-label::before,
+.monaco-workbench .tabs-container > .tab.active .monaco-icon-label::before {
+	filter: saturate(0.6);
+}
+
+/* View headers: small, quiet */
+.monaco-workbench .pane-header h3.title,
+.monaco-workbench .part > .title > .title-label h2 {
+	letter-spacing: 0.04em;
+	font-weight: 500;
+	opacity: 0.7;
+}
+
+/* Tree indent guides: only on hover */
+.monaco-workbench .monaco-tl-indent > .indent-guide {
+	border-color: transparent !important;
+	transition: border-color 150ms ease;
+}
+
+.monaco-workbench .monaco-list:hover .monaco-tl-indent > .indent-guide.active {
+	border-color: color-mix(in srgb, var(--vscode-foreground) 18%, transparent) !important;
+}
+
+/* ---- Editor tabs: no accent line, inactive tabs simply recede ---- */
+.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab > .tab-border-top-container {
+	display: none !important;
+}
+
+.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container > .tab:not(.active) .tab-label {
+	opacity: 0.65;
+}
+
+/* ---- Floating overlays: soft, no borders ---- */
+.monaco-workbench .quick-input-widget,
+.monaco-workbench .monaco-hover,
+.monaco-workbench .editor-widget.suggest-widget,
+.monaco-workbench .editor-widget.find-widget,
+.monaco-workbench .context-view .monaco-menu,
+.monaco-workbench .notification-toast,
+.monaco-workbench .notifications-center {
+	border-radius: var(--horyzont-radius) !important;
+	box-shadow: var(--horyzont-shadow) !important;
+}
+
+.monaco-workbench .quick-input-widget {
+	overflow: hidden;
+}
+
+.monaco-workbench .monaco-menu .action-item .action-menu-item {
+	border-radius: var(--horyzont-radius-sm);
+}
+
+/* ---- Editor: current line is one calm band across numbers and code ---- */
+.monaco-workbench .part.editor .monaco-editor .view-overlays .current-line,
+.monaco-workbench .part.editor .monaco-editor .margin-view-overlays .current-line {
+	background: color-mix(in srgb, var(--vscode-button-background) 7%, transparent) !important;
+	border: none !important;
+	box-shadow: none !important;
+}
+
+.monaco-workbench .part.editor .monaco-editor .margin-view-overlays .current-line {
+	box-shadow: inset 2px 0 0 color-mix(in srgb, var(--vscode-button-background) 80%, transparent) !important;
+}
+
+.monaco-workbench .part.editor .monaco-editor .line-numbers.active-line-number {
+	color: var(--vscode-activityBar-activeForeground) !important;
+}
+
+/* ---- Editor ---- */
+.monaco-workbench .monaco-editor .sticky-widget {
+	box-shadow: 0 4px 8px -6px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Empty editor watermark */
+.monaco-workbench .part.editor > .content .editor-group-container > .editor-group-watermark-wrapper .editor-group-watermark .letterpress {
+	background-size: contain !important;
+	opacity: 0.6;
+}
+
+/* ---- Status bar: muted until hovered ---- */
+.monaco-workbench .part.statusbar > .items-container > .statusbar-item {
+	opacity: 0.6;
+	transition: opacity 120ms ease;
+}
+
+.monaco-workbench .part.statusbar:hover > .items-container > .statusbar-item {
+	opacity: 1;
+}
+
+.monaco-workbench .part.statusbar > .items-container > .statusbar-item > .statusbar-item-label {
+	border-radius: var(--horyzont-radius-sm);
+}
+
+/* ---- Start page ---- */
+.monaco-workbench .gettingStartedContainer .horyzont-header .horyzont-logo {
+	width: 44px;
+	height: 44px;
+	margin-bottom: 14px;
+	background: url('./code-icon.svg') center / contain no-repeat;
+}
+
+.monaco-workbench .gettingStartedContainer .horyzont-header .product-name {
+	font-size: 34px !important;
+	font-weight: 600 !important;
+	letter-spacing: -0.02em;
+	line-height: 1.2 !important;
+	margin: 0 !important;
+}
+
+.monaco-workbench .gettingStartedContainer .horyzont-header .subtitle {
+	display: block;
+	position: static !important;
+	margin-top: 8px !important;
+	line-height: 1.4 !important;
+	font-size: 15px !important;
+	opacity: 0.6;
+}
+
+.monaco-workbench .gettingStartedContainer .agents-banner {
+	display: none !important;
+}
+
+.monaco-workbench .gettingStartedContainer .categories-column h2 {
+	font-size: 11px !important;
+	font-weight: 600 !important;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	opacity: 0.55;
+}
+
+.monaco-workbench .gettingStartedContainer .start-container li button,
+.monaco-workbench .gettingStartedContainer .recently-opened li {
+	border-radius: var(--horyzont-radius-sm);
+	padding: 3px 6px !important;
+	margin-inline-start: -6px;
+}
+
+.monaco-workbench .gettingStartedContainer .start-container li button:hover,
+.monaco-workbench .gettingStartedContainer .recently-opened li:hover {
+	background: var(--vscode-list-hoverBackground);
+	text-decoration: none !important;
+}
+
+.monaco-workbench .gettingStartedContainer .start-container li .codicon {
+	color: var(--vscode-activityBar-activeForeground);
+}
+
+.monaco-workbench .gettingStartedContainer .horyzont-shortcuts {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 8px 0 18px;
+}
+
+.monaco-workbench .gettingStartedContainer .horyzont-shortcut {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	padding: 6px 8px 6px 12px;
+	border: 1px solid var(--vscode-widget-border, transparent);
+	border-radius: var(--horyzont-radius-sm);
+	background: var(--vscode-welcomePage-tileBackground);
+	color: var(--vscode-foreground);
+	font: inherit;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+.monaco-workbench .gettingStartedContainer .horyzont-shortcut:hover {
+	background: var(--vscode-welcomePage-tileHoverBackground);
+}
+
+.monaco-workbench .gettingStartedContainer .horyzont-shortcut-keys {
+	font-family: 'JetBrains Mono', var(--monaco-monospace-font);
+	font-size: 11px;
+	padding: 1px 6px;
+	border-radius: 4px;
+	background: color-mix(in srgb, var(--vscode-foreground) 8%, transparent);
+	color: var(--vscode-descriptionForeground);
+}
+
+/* ---- Scrollbars ---- */
+.monaco-workbench .monaco-scrollable-element > .scrollbar > .slider {
+	border-radius: 999px;
+}
+
+/* ---- Motion ---- */
+@media (prefers-reduced-motion: no-preference) {
+	.monaco-workbench .quick-input-widget,
+	.monaco-workbench .context-view .monaco-menu {
+		animation: horyzont-fade 120ms ease-out;
+	}
+}
+
+@keyframes horyzont-fade {
+	from { opacity: 0; transform: translateY(-3px); }
+	to { opacity: 1; transform: translateY(0); }
+}
