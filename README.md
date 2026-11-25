@@ -24,7 +24,7 @@
 | System | Plik |
 |---|---|
 | Windows (x64) | `HoryzontUserSetup-x64-<wersja>.exe`, aktualizuje się sam |
-| Linux (x64) | `.deb` albo `.tar.gz` |
+| Linux (x64) | `.tar.gz`: rozpakuj i uruchom `bin/horyzont` |
 | macOS (Apple Silicon) | `.zip`, za pierwszym razem otwórz prawym przyciskiem myszy → Otwórz |
 
 Szczegóły zmian, budowania i wydań: [HORYZONT.md](HORYZONT.md).

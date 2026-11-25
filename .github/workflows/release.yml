@@ -111,13 +111,11 @@ jobs:
           mkdir -p dist
           cp .build/win32-${{ matrix.arch }}/user-setup/VSCodeSetup.exe "dist/HoryzontUserSetup-${{ matrix.arch }}-${{ needs.version.outputs.version }}.exe"
 
-      - name: Package Linux archives
+      # A .deb needs the tunnel CLI (built from cli/ in Rust by a separate upstream pipeline), so Linux ships as an archive.
+      - name: Package Linux archive
         if: matrix.platform == 'linux'
         run: |
-          pnpm run gulp vscode-linux-${{ matrix.arch }}-prepare-deb
-          pnpm run gulp vscode-linux-${{ matrix.arch }}-build-deb
           mkdir -p dist
-          cp .build/linux/deb/amd64/deb/*.deb "dist/horyzont-${{ needs.version.outputs.version }}-amd64.deb"
           tar -czf "dist/Horyzont-linux-${{ matrix.arch }}-${{ needs.version.outputs.version }}.tar.gz" -C .. VSCode-linux-${{ matrix.arch }}
 
       - name: Package macOS app
