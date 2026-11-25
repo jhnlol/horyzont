@@ -58,7 +58,7 @@ jobs:
         include:
           - { os: windows-2022, platform: win32, arch: x64 }
           - { os: ubuntu-22.04, platform: linux, arch: x64 }
-          - { os: macos-14, platform: darwin, arch: arm64 }
+          - { os: macos-latest, platform: darwin, arch: arm64 }
     runs-on: ${{ matrix.os }}
     timeout-minutes: 300
     steps:
