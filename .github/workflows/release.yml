@@ -24,7 +24,6 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  NODE_OPTIONS: --max-old-space-size=8192
   VSCODE_QUALITY: stable
   VSCODE_SKIP_NODE_VERSION_CHECK: '1'
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -76,7 +75,7 @@ jobs:
         if: matrix.platform == 'linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y pkg-config libxkbfile-dev libkrb5-dev libsecret-1-dev libgtk-3-0 libgbm1 fakeroot rpm dpkg
+          sudo apt-get install -y pkg-config libxkbfile-dev libkrb5-dev libsecret-1-dev libgtk-3-0 libgbm1 fakeroot rpm dpkg xvfb
 
       - name: Install dependencies
         shell: bash
@@ -91,7 +90,14 @@ jobs:
         run: node build/lib/builtInExtensions.ts
 
       - name: Build application
-        run: pnpm run gulp vscode-${{ matrix.platform }}-${{ matrix.arch }}-min
+        shell: bash
+        # The packaging step starts the built app once (Node.js compile cache), which needs a display on Linux.
+        run: |
+          if [[ "${{ matrix.platform }}" == linux ]]; then
+            xvfb-run -a pnpm run gulp vscode-${{ matrix.platform }}-${{ matrix.arch }}-min
+          else
+            pnpm run gulp vscode-${{ matrix.platform }}-${{ matrix.arch }}-min
+          fi
         env:
           VSCODE_ARCH: ${{ matrix.arch }}
 
