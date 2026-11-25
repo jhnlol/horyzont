@@ -484,7 +484,8 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
 function hasAuthenticodeSignature(filePath: string): Promise<boolean> {
 	return new Promise((resolve, reject) => {
 		const proc = cp.spawn('signtool.exe', ['verify', '/pa', filePath]);
-		proc.on('error', reject);
+		// Horyzont: builds without the Windows SDK on PATH are unsigned anyway, so there is nothing to strip
+		proc.on('error', err => (err as NodeJS.ErrnoException).code === 'ENOENT' ? resolve(false) : reject(err));
 		proc.on('exit', code => resolve(code === 0));
 	});
 }
