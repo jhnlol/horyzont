@@ -25,6 +25,7 @@ concurrency:
 
 env:
   VSCODE_QUALITY: stable
+  VSCODE_SKIP_NODE_COMPILE_CACHE: '1'
   VSCODE_SKIP_NODE_VERSION_CHECK: '1'
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

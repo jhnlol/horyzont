@@ -32,6 +32,12 @@ export function shouldGenerateNodeCompileCache(platform: string, arch: string, p
 		return false;
 	}
 
+	// Horyzont: the cache is a startup optimization that launches the packaged app; release builds without
+	// a display or signing can turn it off.
+	if (process.env['VSCODE_SKIP_NODE_COMPILE_CACHE']) {
+		return false;
+	}
+
 	return platform === 'darwin' ? arch === 'arm64' : (platform === 'linux' || platform === 'win32') && arch === 'x64';
 }
 
